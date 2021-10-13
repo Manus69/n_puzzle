@@ -1,14 +1,18 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "why_definitions.h"
-#include <limits.h>
+#include "why_lib.h"
+#include "board.h"
 
-#define EMPTY_CELL_VALUE 0
-#define MAX_VALUE (1 << (sizeof(byte) * CHAR_BIT))
+#include "definitions.h"
 
-extern byte BOARD_SIZE;
+extern Game* _game;
 
-byte board_size_set(byte size);
+struct Game
+{
+    byte        BOARD_SIDE_SIZE;
+    byte        BOARD_TOTAL_SIZE;
+    HashTable*  boards;
+};
 
 #endif

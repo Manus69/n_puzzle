@@ -1,4 +1,8 @@
 #include "board.h"
+#include "game.h"
+#include "definitions.h"
+#include "declarations.h"
+#include "why_lib.h"
 
 #include <assert.h>
 
@@ -7,7 +11,7 @@ static byte _find_empty_position(byte* values)
     byte n;
 
     n = 0;
-    while (n < BOARD_SIZE)
+    while (n < _game->BOARD_SIDE_SIZE)
     {
         if (values[n] == EMPTY_CELL_VALUE)
             return n;
@@ -18,46 +22,35 @@ static byte _find_empty_position(byte* values)
     assert(0);
 }
 
-byte c_map(byte row, byte col)
-{
-    return row * col + col;
-}
-
-byte c_row(byte index)
-{
-    return index / BOARD_SIZE;
-}
-
-byte c_col(byte index)
-{
-    return index % BOARD_SIZE;
-}
-
 void board_init(Board* board, byte* values)
 {
-    board->values = memory_init(board->values, values, BOARD_SIZE);
+    board->values = (byte *)board + sizeof(Board);
+    board->values = memory_init(board->values, values, _game->BOARD_TOTAL_SIZE);
     board->empty_position_index = _find_empty_position(values);
+    board->hash_value = hash_board(board);
+}
+
+int_signed _get_board_mem_size()
+{
+    return sizeof(Board) + (_game->BOARD_TOTAL_SIZE * sizeof(byte));
 }
 
 Board* board_create(byte* values)
 {
-    Board* board;
+    Board*      board;
+    int_signed  total_size;
 
-    board = allocate(sizeof(Board) + sizeof(byte *) + sizeof(byte) + BOARD_SIZE * sizeof(byte));
-    board->empty_position_index = (byte *)board + sizeof(Board);
-    board->values = board->empty_position_index + sizeof(byte);
+    total_size = _get_board_mem_size();
+    board = allocate(total_size);
 
     board_init(board, values);
+
+    hash_table_insert_hashed(_game->boards, board, board_compare, board->hash_value);
 
     return board;
 }
 
-byte board_at(const Board* board, byte n)
+void board_destroy(Board* board)
 {
-    return board->values[n];
-}
-
-byte board_atG(const Board* board, byte row, byte col)
-{
-    return board_at(board, c_map(row, col));
+    free(board);
 }
