@@ -9,7 +9,6 @@ struct State
     Board*      current_board;
     Heap*       queue;
     HashTable*  used_boards;
-    Array*      path;
 };
 
 #endif

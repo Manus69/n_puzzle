@@ -8,7 +8,7 @@
 
 byte map_to_index(byte row, byte col)
 {
-    return row * col + col;
+    return row * _game->BOARD_SIDE_SIZE + col;
 }
 
 byte map_to_row(byte index)
@@ -56,12 +56,27 @@ byte board_atG(const Board* board, byte row, byte col)
     return board_at(board, map_to_index(row, col));
 }
 
+byte board_index_of_zero(const Board* board)
+{
+    return board->empty_position_index;
+}
+
+byte board_row_of_zero(const Board* board)
+{
+    return map_to_row(board->empty_position_index);
+}
+
+byte board_col_of_zero(const Board* board)
+{
+    return map_to_col(board->empty_position_index);
+}
+
 static void _swap(Board* board, byte l_index, byte r_index)
 {
     SWAP(board->values[l_index], board->values[r_index], byte);
 }
 
-int_signed board_compare(const Board* lhs, const Board* rhs)
+int_signed board_compare_values(const Board* lhs, const Board* rhs)
 {
     int_signed n;
 
@@ -76,7 +91,57 @@ int_signed board_compare(const Board* lhs, const Board* rhs)
     return n == _game->BOARD_TOTAL_SIZE ? 0 : rhs->values[n] - lhs->values[n];
 }
 
-static Board* _board_move(const Board* board, short (*index_function)(byte))
+int_signed board_compare(const Board* lhs, const Board* rhs)
+{
+    if (!lhs && !rhs)
+        return 0;
+
+    if (!lhs)
+        return 1;
+        
+    if (!rhs)
+        return -1;
+
+    if (lhs->hash_value == rhs->hash_value)
+        return board_compare_values(lhs, rhs);
+
+    return rhs->hash_value - lhs->hash_value;
+}
+
+static bool _board_move(Board* board, short (*index_function)(byte))
+{
+    short   index;
+
+    index = index_function(board->empty_position_index);
+    if (!_index_in_range(index))
+        return false;
+
+    _swap(board, index, board->empty_position_index);
+
+    return true;
+}
+
+bool _board_up(Board* board)
+{
+    return _board_move(board, index_above);
+}
+
+bool _board_down(Board* board)
+{
+    return _board_move(board, index_below);
+}
+
+bool _board_left(Board* board)
+{
+    return _board_move(board, index_leftward);
+}
+
+bool _board_right(Board* board)
+{
+    return _board_move(board, index_rightward);
+}
+
+static Board* _board_move_create(const Board* board, short (*index_function)(byte))
 {
     Board*  new_board;
     short   index;
@@ -85,32 +150,33 @@ static Board* _board_move(const Board* board, short (*index_function)(byte))
     if (!_index_in_range(index))
         return NULL;
     
-    new_board = memory_copy(board, _get_board_mem_size());
+    new_board = board_copy(board);
     _swap(new_board, index, board->empty_position_index);
+
+    new_board->values = (byte *)new_board + sizeof(Board);
     new_board->empty_position_index = index;
     new_board->hash_value = hash_board(new_board);
-
-    hash_table_insert_hashed(_game->boards, new_board, board_compare, new_board->hash_value);
+    new_board->previous = (Board *)board;
 
     return new_board;
 }
 
 Board* board_up(const Board* board)
 {
-    return _board_move(board, index_above);
+    return _board_move_create(board, index_above);
 }
 
 Board* board_down(const Board* board)
 {
-    return _board_move(board, index_below);
+    return _board_move_create(board, index_below);
 }
 
 Board* board_left(const Board* board)
 {
-    return _board_move(board, index_leftward);
+    return _board_move_create(board, index_leftward);
 }
 
 Board* board_right(const Board* board)
 {
-    return _board_move(board, index_rightward);
+    return _board_move_create(board, index_rightward);
 }

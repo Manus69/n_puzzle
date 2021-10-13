@@ -17,18 +17,17 @@ State* state_create(byte* values)
     state = allocate(sizeof(State));
     capacity = _estimate_used_board_count();
 
-    state->current_board = board_create(values);
-    state->queue = heap_create(copy_shallow, NULL, board_compare); //this needs a proper metric
+    state->current_board = board_create_register(values);
+    state->queue = heap_create(copy_shallow, NULL, metric_manhattan);
     state->used_boards = hash_table_create(copy_shallow, NULL, hash_board, capacity);
-    state->path = array_create(copy_shallow, NULL);
 
     return state;
 }
 
 void state_destroy(State* state)
 {
+    // board_destroy(state->current_board);
     heap_destroy(state->queue);
     hash_table_destroy(state->used_boards);
-    array_destroy(state->path);
     free(state);
 }
