@@ -1,6 +1,7 @@
 #include "game.h"
 #include "declarations.h"
 #include "definitions.h"
+#include "why_lib.h"
 
 #include <assert.h>
 
@@ -30,12 +31,12 @@ static Board* _get_solved_board(int_signed total_size)
 
     values[n - 1] = 0;
 
-    return board_create_size(values, total_size);
+    return board_create(values, total_size);
 }
 
 Game* _game_create(int_signed total_size)
 {
-    Game*           game;
+    Game* game;
 
     game = allocate(sizeof(Game));
     game->BOARD_TOTAL_SIZE = total_size;

@@ -9,6 +9,10 @@ struct State
     Board*      current_board;
     Heap*       queue;
     HashTable*  used_boards;
+
+    int_signed  (*queue_compare_function)();
+    int_signed  (*metric)(const Board *);
+    int_signed  metric_value;
 };
 
 #endif

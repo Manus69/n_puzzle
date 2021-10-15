@@ -1,16 +1,37 @@
 #include "why_lib.h"
 #include "game.h"
 #include "definitions.h"
+#include "declarations.h"
+#include "board.h"
 
 #include <assert.h>
 
-byte represent_number(const char* number_string)
+int_signed count_transpositions(const Board* board)
 {
-    int_signed number;
+    int_signed  swaps;
+    int_signed  n;
+    byte        value;
+    byte        total_size;
+    Board*      scratch_board;
 
-    number = convert_to_int(number_string);
-    if (number < 0 || number > MAX_CELL_VALUE)
-        assert(0);
+    swaps = 0;
+    n = 0;
+    scratch_board = board_copy(board);
+    total_size = board_get_total_size(board);
+
+    while (n < total_size)
+    {
+        // value = board_at(board, n);
+        while ((value = board_at(board, n)) != n + 1)
+        {
+            BOARD_SWAP(scratch_board, n, value);
+            swaps ++;
+        }
+
+        n ++;
+    }
+
+    board_destroy(scratch_board);
     
-    return number;
+    return swaps;
 }

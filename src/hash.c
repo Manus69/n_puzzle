@@ -10,5 +10,5 @@ int_unsigned hash_board_size(const Board* board, int_signed size)
 
 int_unsigned hash_board(const Board* board)
 {
-    return hash_board_size(board, _game->BOARD_TOTAL_SIZE);
+    return hash_board_size(board, board->side_size * board->side_size);
 }

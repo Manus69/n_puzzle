@@ -8,5 +8,6 @@
 typedef struct Board Board;
 typedef struct Game Game;
 typedef struct State State;
+typedef struct Position Position;
 
 #endif

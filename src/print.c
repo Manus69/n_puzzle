@@ -26,25 +26,24 @@ static void _print_value(byte value)
 
 void print_board(const Board* board)
 {
-    int_signed  j;
-    int_signed  k;
+    Position    position;
     byte        value;
 
     if (!board)
         return ;
     
-    j = 0;
-    while (j < _game->BOARD_SIDE_SIZE)
+    position = (Position){0, 0};
+    while (position.row < board->side_size)
     {
-        k = 0;
-        while (k < _game->BOARD_SIDE_SIZE)
+        position.col = 0;
+        while (position.col < board->side_size)
         {
-            value = board_atG(board, j, k);
+            value = board_at_position(board, position);
             _print_value(value);
-            k ++;
+            position.col ++;
         }
         printf("\n");
-        j ++;
+        position.row ++;
     }
     printf("\n");
 }

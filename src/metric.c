@@ -1,20 +1,48 @@
-#include "why_lib.h"
+#include "why_definitions.h"
 #include "definitions.h"
 #include "declarations.h"
 #include "game.h"
+#include "board.h"
+#include "why_macros.h"
 
-int_signed metric_manhattan(const Board* board)
+int_signed get_manhattan_distnace(const Board* board, byte index)
 {
-    byte row;
-    byte col;
+    Position intended_position;
+    Position actual_position;
+    Position diff;
 
-    row = board_row_of_zero(board);
-    col = board_col_of_zero(board);
+    intended_position = get_intended_position(board_at(board, index), board->side_size);
+    actual_position = position_from_index(index, board->side_size);
+    diff = position_diff(intended_position, actual_position);
 
-    return 2 * _game->BOARD_SIDE_SIZE - (row + col) - 2;
+    return position_vector_length(diff);
 }
 
-int_signed metric_manhattanN(const Board* board)
+int_signed get_all_points_distance(const Board* board)
 {
-    return -metric_manhattan(board);
+    int_signed  total_distance;
+    byte        index;
+    byte        total_size;
+
+    index = 0;
+    total_distance = 0;
+    total_size = board_get_total_size(board);
+
+    while (index < total_size)
+    {
+        total_distance = get_manhattan_distnace(board, index);
+        index ++;
+    }
+
+    return total_distance;
+}
+
+int_signed get_manhattan_distance_of_zero(const Board* board)
+{
+    return get_manhattan_distnace(board, board->empty_position_index);
+}
+
+int_signed get_manhattan_distance_of_zeroN(const Board* board)
+{
+    return -get_manhattan_distance_of_zero(board);
 }

@@ -1,13 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "why_lib.h"
-
+#include "why_definitions.h"
 #include "definitions.h"
 
 extern Game* _game;
-
-typedef struct Game Game;
 
 struct Game
 {
