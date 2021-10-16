@@ -2,20 +2,21 @@
 #include "definitions.h"
 #include "declarations.h"
 #include "board.h"
+#include "board_inline.h"
 #include "game.h"
 #include "position.h"
 
 #include <stdlib.h>
 
-static bool _board_move(Board* board, short (*index_function)(byte, byte))
+static bool _board_move(Board* board, short (*index_function)(short, short))
 {
     short   index;
 
     index = index_function(board->empty_position_index, board->side_size);
-    if (!index_is_valid(index, _game->BOARD_TOTAL_SIZE))
+    if (!index_is_valid(index, board_get_total_size(board)))
         return false;
 
-    BOARD_SWAP(board, index, board->empty_position_index);
+    board_swap(board, index, board->empty_position_index);
 
     return true;
 }
@@ -40,7 +41,7 @@ bool _board_right(Board* board)
     return _board_move(board, index_rightward);
 }
 
-static Board* _board_move_create(const Board* board, short (*index_function)(byte, byte))
+static Board* _board_move_create(const Board* board, short (*index_function)(short, short))
 {
     Board*  new_board;
     short   index;
@@ -50,7 +51,7 @@ static Board* _board_move_create(const Board* board, short (*index_function)(byt
         return NULL;
     
     new_board = board_copy(board);
-    BOARD_SWAP(new_board, index, board->empty_position_index);
+    board_swap(new_board, index, board->empty_position_index);
     board_init_fields(new_board, board, index);
 
     return new_board;

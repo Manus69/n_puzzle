@@ -4,7 +4,7 @@ name = npuzzle
 
 cc = gcc
 flags = -Wall -Wextra -g
-release_flags = -Wall -Wextra -O3
+release_flags = -Wall -Wextra -O3 -flto
 
 source_folder = src/
 obj_folder = obj/

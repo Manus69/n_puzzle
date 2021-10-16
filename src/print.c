@@ -1,11 +1,18 @@
 #include "board.h"
+#include "board_inline.h"
 #include "state.h"
 #include "game.h"
 #include "declarations.h"
+#include "why_lib.h"
 
 #include <stdio.h>
 
-static void _print_value(byte value)
+static int _compute_cell_width(int total_size)
+{
+    return (byte)math_log10(total_size);
+}
+
+static void _print_value(byte value, int cell_width)
 {
     String* string;
     char*   characters;
@@ -14,7 +21,7 @@ static void _print_value(byte value)
     {
         string = convert_to_string_uint(value);
         characters = string_get_characters(string);
-        printf("%.*s", _game->CELL_SIZE + 1, characters);
+        printf("%.*s", cell_width + 1, characters);
         string_destroy(string);
     }
     else 
@@ -39,7 +46,7 @@ void print_board(const Board* board)
         while (position.col < board->side_size)
         {
             value = board_at_position(board, position);
-            _print_value(value);
+            _print_value(value, _compute_cell_width(board->side_size * board->side_size));
             position.col ++;
         }
         printf("\n");
@@ -48,10 +55,10 @@ void print_board(const Board* board)
     printf("\n");
 }
 
-void print_current_board(const State* state)
+void print_current_board(const Game* game)
 {
     Board* board;
 
-    board = state->current_board;
+    board = game->current_board;
     print_board(board);
 }

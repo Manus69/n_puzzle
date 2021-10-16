@@ -1,11 +1,11 @@
 #include "why_lib.h"
 #include "definitions.h"
 #include "game.h"
-#include "board.h"
+#include "board_inline.h"
 
 int_unsigned hash_board_size(const Board* board, int_signed size)
 {
-    return hash_bytesFL(board->values, size);
+    return hash_bytesFL(board_get_values(board), size);
 }
 
 int_unsigned hash_board(const Board* board)

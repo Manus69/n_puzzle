@@ -3,9 +3,10 @@
 #include "declarations.h"
 #include "game.h"
 #include "board.h"
+#include "board_inline.h"
 #include "why_macros.h"
 
-int_signed get_manhattan_distnace(const Board* board, byte index)
+int_signed metric_mhtn_at_index(const Board* board, byte index)
 {
     Position intended_position;
     Position actual_position;
@@ -18,7 +19,7 @@ int_signed get_manhattan_distnace(const Board* board, byte index)
     return position_vector_length(diff);
 }
 
-int_signed get_all_points_distance(const Board* board)
+int_signed metric_mhtn_all(const Board* board)
 {
     int_signed  total_distance;
     byte        index;
@@ -30,19 +31,14 @@ int_signed get_all_points_distance(const Board* board)
 
     while (index < total_size)
     {
-        total_distance = get_manhattan_distnace(board, index);
+        total_distance += metric_mhtn_at_index(board, index);
         index ++;
     }
 
     return total_distance;
 }
 
-int_signed get_manhattan_distance_of_zero(const Board* board)
+int_signed metric_mhtn_zero(const Board* board)
 {
-    return get_manhattan_distnace(board, board->empty_position_index);
-}
-
-int_signed get_manhattan_distance_of_zeroN(const Board* board)
-{
-    return -get_manhattan_distance_of_zero(board);
+    return metric_mhtn_at_index(board, board->empty_position_index);
 }

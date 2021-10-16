@@ -47,7 +47,7 @@ byte* input_get_bytes(const Array* strings)
     return _to_bytes(strings, size);
 }
 
-byte* debug_get_bytes(const char* string)
+byte* input_get_bytesCSTR(const char* string)
 {
     Array* number_strings;
 
