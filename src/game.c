@@ -9,8 +9,7 @@
 
 static int_unsigned _estimate_table_capacity(int_signed total_size)
 {
-    // return total_size * total_size;
-    return 37;
+    return total_size * total_size * total_size * total_size;
 }
 
 Game* game_create(byte* values, int_signed total_size, int_signed (*metric)(const Board *))
@@ -21,18 +20,17 @@ Game* game_create(byte* values, int_signed total_size, int_signed (*metric)(cons
     game = allocate(sizeof(Game));
 
     capacity = _estimate_table_capacity(total_size);
-    // game->boards = hash_table_create(copy_shallow, board_destroy, hash_board, capacity);
-    // game->visited_boards = hash_table_create(copy_shallow, NULL, hash_board, capacity);
-    game->boards = _hash_table_create_force_capacity(copy_shallow, board_destroy, hash_board, capacity);
-    game->visited_boards = _hash_table_create_force_capacity(copy_shallow, NULL, hash_board, capacity);
+    game->boards = hash_table_create(copy_shallow, board_destroy, hash_board, capacity);
+    game->visited_boards = hash_table_create(copy_shallow, NULL, hash_board, capacity);
     game->queue = heap_create(copy_shallow, NULL, board_compare_metric_vals);
     game->metric = metric;
+    game->metric_increment = (metric == metric_mhtn_all) ? metric_mhtn_after_swap : NULL; //
 
     game->current_board = board_create(values, total_size);
     if (check_parity(game->current_board))
         assert(0);
-    
     board_register(game, game->current_board);
+    
     board_compute_metric(game->current_board, game->metric);
 
     game->BOARD_TOTAL_SIZE = total_size;

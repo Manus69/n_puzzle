@@ -34,10 +34,6 @@ int_signed count_transpositions(const Board* board)
         n ++;
     }
 
-    #ifdef DBG
-        print_board(scratch_board);
-    #endif
-
     board_destroy(scratch_board);
     
     return swaps;
@@ -47,12 +43,30 @@ byte check_parity(const Board* board)
 {
     Board*      scratch_board;
     int_signed  total_size;
+    int_signed  transpositions;
+    Position    position_of_zero;
+    byte        parity;
 
+    #ifdef DBG
+        print_board(board);
+    #endif
+
+    position_of_zero = position_from_index(board->empty_position_index, board->side_size);
     total_size = board_get_total_size(board);
     scratch_board = board_copy(board);
-    board_swap(scratch_board, board->empty_position_index, total_size - 1);
+    transpositions = 0;
 
-    return count_transpositions(scratch_board) % 2; 
+    if (board->empty_position_index != total_size - 1)
+    {
+        board_swap(scratch_board, board->empty_position_index, total_size - 1);
+        transpositions ++;
+    }
+
+    transpositions += count_transpositions(scratch_board);
+    parity = (transpositions + position_vector_length(position_of_zero)) % 2;
+    board_destroy(scratch_board);
+
+    return parity;
 }
 
 Board* get_solved_board(int_signed total_size)

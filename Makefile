@@ -24,6 +24,9 @@ all: directory $(name)
 directory:
 	@mkdir -p $(obj_folder)
 
+release: flags = $(release_flags)
+release: re
+
 $(obj_folder)%.o: $(source_folder)%.c $(headers)
 	$(cc) $(flags) $(include_flag) $< -c -o $@
 

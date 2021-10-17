@@ -1,8 +1,11 @@
 #include "declarations.h"
 #include "definitions.h"
 #include "why_lib.h"
+#include "why_definitions.h"
 
 #include <assert.h>
+
+#define COMMENT_SYMBOL "#"
 
 static byte* _to_bytes(const Array* strings, int_signed size)
 {
@@ -56,5 +59,77 @@ byte* input_get_bytesCSTR(const char* string)
     return input_get_bytes(number_strings);
 }
 
+Array* process_string_array(const Array* string_array)
+{
+    Array*      number_strings;
+    String*     string;
+    int_signed  n;
 
-//static Array* _filter_strings(const Array* input_strings); or something?
+    if (!string_array)
+        return NULL;
+    
+    number_strings = array_create_with_capacity(copy_shallow, string_destroy, array_size(string_array));
+    n = 0;
+    while (n < array_size(string_array))
+    {
+        string = array_at(string_array, n);
+        if (!string_starts_with(string, COMMENT_SYMBOL))
+        {
+            string = string_trim(string);
+            array_push(number_strings, string);
+        }
+
+        n ++;
+    }
+
+    array_pop_front(number_strings);
+
+    return number_strings;
+}
+
+Array* input_get_strings_from_stdin()
+{
+    Array* lines;
+    Array* number_strings;
+
+    if (!(lines = get_all_linesA(STDIN_FILENO)))
+        return NULL;
+
+    number_strings = process_string_array(lines);
+
+    array_destroy(lines);
+
+    return number_strings;
+}
+
+Array* input_get_strings_from_file(const char* file_name)
+{
+    Array* lines;
+    Array* number_strings;
+
+    if (!(lines = get_all_linesAFN(file_name)))
+        return NULL;
+    
+    number_strings = process_string_array(lines);
+
+    array_destroy(lines);
+
+    return number_strings;
+}
+
+Game* get_game_from_file(const char* file_name, int_signed (*metric)(const Board *))
+{
+    Array*  number_strings;
+    Game*   game;
+    byte*   bytes;
+
+    if (!(number_strings = input_get_strings_from_file(file_name)))
+        return NULL;
+    
+    bytes = input_get_bytes(number_strings);
+    game = game_create(bytes, array_size(number_strings), metric);
+
+    array_destroy(number_strings);
+
+    return game;
+}

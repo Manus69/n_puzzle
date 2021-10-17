@@ -9,6 +9,9 @@ Board*          get_solved_board(int_signed total_size);
 int_signed      count_transpositions(const Board* board);
 byte            check_parity(const Board* board);
 
+//solution
+Array*          get_solution(const Board* final_board);
+
 //board
 void            board_init(Board* board, byte* values, byte n_cells);
 void            board_init_fields(Board* board, const Board* previous, byte ep_index);
@@ -22,10 +25,10 @@ bool            _board_up(Board* board);
 bool            _board_down(Board* board);
 bool            _board_left(Board* board);
 bool            _board_right(Board* board);
-Board*          board_up(const Board* board);
-Board*          board_down(const Board* board);
-Board*          board_left(const Board* board);
-Board*          board_right(const Board* board);
+Board*          board_up(const Game* game, const Board* board);
+Board*          board_down(const Game* game, const Board* board);
+Board*          board_left(const Game* game, const Board* board);
+Board*          board_right(const Game* game, const Board* board);
 Board*          board_create_register(byte* values, byte n_cells);
 bool            board_register(Game* game, const Board* board);
 bool            board_exists(Game* game, const Board* board);
@@ -45,14 +48,14 @@ Board*          game_play(Game* game);
 int_signed      metric_mhtn_at_index(const Board* board, byte index);
 int_signed      metric_mhtn_all(const Board* board);
 int_signed      metric_mhtn_zero(const Board* board);
-int_signed      get_manhattan_distance_of_zeroN(const Board* board);
-int_signed      board_compare_manhattan_zero(const Board* lhs, const Board* rhs);
+int_signed      metric_mhtn_after_swap(const Board* board, byte j, byte k);
 
 //io
 byte*           input_get_bytes(const Array* strings);
 byte*           input_get_bytesCSTR(const char* string);
 void            print_current_board(const Game* state);
 void            print_board(const Board* board);
+Game*           get_game_from_file(const char* file_name, int_signed (*metric)(const Board *));
 
 //hash
 int_unsigned    hash_board(const Board* board);

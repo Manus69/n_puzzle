@@ -21,7 +21,7 @@ static void _print_value(byte value, int cell_width)
     {
         string = convert_to_string_uint(value);
         characters = string_get_characters(string);
-        printf("%.*s", cell_width + 1, characters);
+        printf("%*s", cell_width + 1, characters);
         string_destroy(string);
     }
     else 

@@ -7,6 +7,9 @@
 #include "position.h"
 
 #include <stdlib.h>
+#include <stdio.h>
+
+// #define DBG
 
 static bool _board_move(Board* board, short (*index_function)(short, short))
 {
@@ -41,7 +44,7 @@ bool _board_right(Board* board)
     return _board_move(board, index_rightward);
 }
 
-static Board* _board_move_create(const Board* board, short (*index_function)(short, short))
+static Board* _board_move_create(const Game* game, const Board* board, short (*index_function)(short, short))
 {
     Board*  new_board;
     short   index;
@@ -54,25 +57,32 @@ static Board* _board_move_create(const Board* board, short (*index_function)(sho
     board_swap(new_board, index, board->empty_position_index);
     board_init_fields(new_board, board, index);
 
+    #ifdef DBG
+        printf("New board with hash %llu, index %llu\n",
+        new_board->hash_value, new_board->hash_value % game_get_hash_table_capacity(game));
+    #endif
+
+    new_board->metric_value = game->metric_increment(board, index, board->empty_position_index);
+
     return new_board;
 }
 
-Board* board_up(const Board* board)
+Board* board_up(const Game* game, const Board* board)
 {
-    return _board_move_create(board, index_above);
+    return _board_move_create(game, board, index_above);
 }
 
-Board* board_down(const Board* board)
+Board* board_down(const Game* game, const Board* board)
 {
-    return _board_move_create(board, index_below);
+    return _board_move_create(game, board, index_below);
 }
 
-Board* board_left(const Board* board)
+Board* board_left(const Game* game, const Board* board)
 {
-    return _board_move_create(board, index_leftward);
+    return _board_move_create(game, board, index_leftward);
 }
 
-Board* board_right(const Board* board)
+Board* board_right(const Game* game, const Board* board)
 {
-    return _board_move_create(board, index_rightward);
+    return _board_move_create(game, board, index_rightward);
 }

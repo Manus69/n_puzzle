@@ -14,6 +14,8 @@ struct Game
     Heap*       queue;
 
     int_signed  (*metric)(const Board *);
+    int_signed  (*metric_increment)(const Board* board, byte j, byte k);
+    
     byte        BOARD_SIDE_SIZE;
     byte        BOARD_TOTAL_SIZE;
 };
