@@ -87,21 +87,12 @@ const char* unsolvable[] =
 
 void test()
 {
-    Array*  strings;
-    byte*   bytes;
     Board*  solution;
     Game*   game;
 
-    // strings = string_splitCSTR(solvable[3], ' ');
-    // strings = string_splitCSTR(unsolvable[3], ' ');
-    // bytes = input_get_bytes(strings);
-    // game = game_create(bytes, array_size(strings), metric_mhtn_all);
-    // print_current_board(game);
-    // printf("//\n");
-
-    game = get_game_from_file("test_file", metric_mhtn_all);
-
+    game = get_game_from_file("test.txt", metric_mhtn_all);
     solution = game_play(game);
+
     Array* path = get_solution(solution);
     print_array(path, print_board, NULL);
     printf("Path lenght: %lld\n", array_size(path));
@@ -120,20 +111,33 @@ void test()
     // free(bytes);
 }
 
-//unfuck the includes (dont include more than you need)
+//includes (dont include more than you need)
 //capacity computation
 //author file
 
-int main()
+int main(int argc, char** argv)
 {
-    clock_t start;
-    clock_t end;
+    clock_t     start;
+    clock_t     end;
+    Game*       game;
+    int_signed  (*metric)(const Board *);
 
     start = clock();
 
     atexit(_at_exit);
 
-    test();
+    metric = metric_mhtn_all;
+
+    if (argc == 1)
+        game = get_game_from_stdin(metric);
+    else if (argc == 2)
+        game = get_game_from_file(argv[1], metric);
+    else
+        display_usage();
+
+    game_play(game);
+
+
     // metric_test();
     // hash_test();
 

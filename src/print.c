@@ -62,3 +62,8 @@ void print_current_board(const Game* game)
     board = game->current_board;
     print_board(board);
 }
+
+void display_usage()
+{
+    printf("PLACEHOLDER MESSAGE\n");
+}

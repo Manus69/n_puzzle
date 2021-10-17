@@ -56,6 +56,8 @@ byte*           input_get_bytesCSTR(const char* string);
 void            print_current_board(const Game* state);
 void            print_board(const Board* board);
 Game*           get_game_from_file(const char* file_name, int_signed (*metric)(const Board *));
+Game*           get_game_from_stdin(int_signed (*metric)(const Board *));
+void            display_usage();
 
 //hash
 int_unsigned    hash_board(const Board* board);

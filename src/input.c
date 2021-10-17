@@ -59,6 +59,15 @@ byte* input_get_bytesCSTR(const char* string)
     return input_get_bytes(number_strings);
 }
 
+static void _process_first_string(String* string)
+{
+    int_signed value;
+
+    value = convert_to_int(string_get_characters(string));
+
+    string_destroy(string);
+}
+
 Array* process_string_array(const Array* string_array)
 {
     Array*      number_strings;
@@ -82,7 +91,8 @@ Array* process_string_array(const Array* string_array)
         n ++;
     }
 
-    array_pop_front(number_strings);
+    string = array_pop_front(number_strings);
+    _process_first_string(string);
 
     return number_strings;
 }
@@ -117,19 +127,36 @@ Array* input_get_strings_from_file(const char* file_name)
     return number_strings;
 }
 
-Game* get_game_from_file(const char* file_name, int_signed (*metric)(const Board *))
+static Game* _get_game(Array* number_strings, int_signed (*metric)())
 {
-    Array*  number_strings;
     Game*   game;
     byte*   bytes;
 
-    if (!(number_strings = input_get_strings_from_file(file_name)))
-        return NULL;
-    
     bytes = input_get_bytes(number_strings);
     game = game_create(bytes, array_size(number_strings), metric);
 
     array_destroy(number_strings);
+    free(bytes);
 
     return game;
+}
+
+Game* get_game_from_file(const char* file_name, int_signed (*metric)(const Board *))
+{
+    Array*  number_strings;
+
+    if (!(number_strings = input_get_strings_from_file(file_name)))
+        return NULL;
+    
+    return _get_game(number_strings, metric);
+}
+
+Game* get_game_from_stdin(int_signed (*metric)(const Board *))
+{
+    Array* number_strings;
+
+    if (!(number_strings = input_get_strings_from_stdin()))
+        return NULL;
+    
+    return _get_game(number_strings, metric);
 }
