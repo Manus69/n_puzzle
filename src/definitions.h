@@ -8,5 +8,6 @@
 typedef struct Board Board;
 typedef struct Game Game;
 typedef struct Position Position;
+typedef struct Config Config; 
 
 #endif

@@ -4,6 +4,8 @@
 #include "why_definitions.h"
 #include "definitions.h"
 
+#include <time.h>
+
 struct Game
 {
     Board*      solved_board;
@@ -18,6 +20,8 @@ struct Game
     
     byte        BOARD_SIDE_SIZE;
     byte        BOARD_TOTAL_SIZE;
+
+    clock_t     game_created;
 };
 
 #endif

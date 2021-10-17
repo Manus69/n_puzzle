@@ -85,58 +85,63 @@ const char* unsolvable[] =
 
 // #define DISTRIBUTION
 
-void test()
-{
-    Board*  solution;
-    Game*   game;
+// void test()
+// {
+//     Board*  solution;
+//     Game*   game;
 
-    game = get_game_from_file("test.txt", metric_mhtn_all);
-    solution = game_play(game);
+//     // game = get_game_from_file("test.txt", metric_mhtn_all);
+//     solution = game_play(game);
 
-    Array* path = get_solution(solution);
-    print_array(path, print_board, NULL);
-    printf("Path lenght: %lld\n", array_size(path));
+//     Array* path = get_solution(game, solution);
+//     print_array(path, print_board, NULL);
+//     printf("Path lenght: %lld\n", array_size(path));
 
-    display_status(game);
+//     display_status(game);
 
-    #ifdef DISTRIBUTION
-        Array* distr = _hash_table_get_distribution(game->boards);
-        print_distribution(distr);
-        array_destroy(distr);
-    #endif
+//     #ifdef DISTRIBUTION
+//         Array* distr = _hash_table_get_distribution(game->boards);
+//         print_distribution(distr);
+//         array_destroy(distr);
+//     #endif
 
-    array_destroy(path);
-    // array_destroy(strings);
-    game_destroy(game);
-    // free(bytes);
-}
+//     array_destroy(path);
+//     // array_destroy(strings);
+//     game_destroy(game);
+//     // free(bytes);
+// }
 
-//includes (dont include more than you need)
+
 //capacity computation
+//includes (dont include more than you need)
 //author file
+//check if inlinig affects performance
+//display hash table distribution
 
 int main(int argc, char** argv)
 {
     clock_t     start;
     clock_t     end;
     Game*       game;
-    int_signed  (*metric)(const Board *);
+    Config*     config;
 
     start = clock();
-
     atexit(_at_exit);
 
-    metric = metric_mhtn_all;
+    if (!(config = config_create()))
+    {
+        error_display();
+        return EXIT_FAILURE;
+    }
 
     if (argc == 1)
-        game = get_game_from_stdin(metric);
+        game = get_game_from_stdin(config);
     else if (argc == 2)
-        game = get_game_from_file(argv[1], metric);
+        game = get_game_from_file(argv[1], config);
     else
         display_usage();
 
-    game_play(game);
-
+    run(game, config, start);
 
     // metric_test();
     // hash_test();

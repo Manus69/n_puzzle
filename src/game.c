@@ -29,13 +29,14 @@ Game* game_create(byte* values, int_signed total_size, int_signed (*metric)(cons
     game->current_board = board_create(values, total_size);
     if (check_parity(game->current_board))
         assert(0);
+
     board_register(game, game->current_board);
-    
     board_compute_metric(game->current_board, game->metric);
 
     game->BOARD_TOTAL_SIZE = total_size;
     game->BOARD_SIDE_SIZE = math_is_perfect_square(total_size);
     game->solved_board = get_solved_board(total_size);
+    game->game_created = clock();
 
     return game;
 }

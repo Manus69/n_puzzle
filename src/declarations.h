@@ -4,13 +4,18 @@
 #include "why_definitions.h"
 #include "definitions.h"
 
+#include <time.h>
+
+void            run(Game* game, const Config* config, clock_t start);
+
 //support
 Board*          get_solved_board(int_signed total_size);
 int_signed      count_transpositions(const Board* board);
 byte            check_parity(const Board* board);
+double          time_diff(clock_t start, clock_t end);
 
 //solution
-Array*          get_solution(const Board* final_board);
+Array*          get_solution(const Game* game, const Board* final_board);
 
 //board
 void            board_init(Board* board, byte* values, byte n_cells);
@@ -55,16 +60,27 @@ byte*           input_get_bytes(const Array* strings);
 byte*           input_get_bytesCSTR(const char* string);
 void            print_current_board(const Game* state);
 void            print_board(const Board* board);
-Game*           get_game_from_file(const char* file_name, int_signed (*metric)(const Board *));
-Game*           get_game_from_stdin(int_signed (*metric)(const Board *));
+Game*           get_game_from_file(const char* file_name, const Config* config);
+Game*           get_game_from_stdin(const Config* config);
 void            display_usage();
 
 //hash
 int_unsigned    hash_board(const Board* board);
 int_unsigned    hash_board_size(const Board* board, int_signed size);
 
+//config
+Config*         config_create();
+void            config_destroy(Config* config);
+void*           config_get_metric(const Config* config);
+bool            config_last_board(const Config* config);
+bool            config_all_boards(const Config* config);
+bool            config_path_length(const Config* config);
+bool            config_time(const Config* config);
+bool            config_created(const Config* config);
+bool            config_visied(const Config* config);
+bool            config_queue(const Config* config);
+
 //debug
 byte*           debug_get_bytes(const char* string);
-
 
 #endif

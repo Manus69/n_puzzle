@@ -4,6 +4,7 @@
 #include "why_definitions.h"
 
 #include <assert.h>
+#include <unistd.h>
 
 #define COMMENT_SYMBOL "#"
 
@@ -61,10 +62,7 @@ byte* input_get_bytesCSTR(const char* string)
 
 static void _process_first_string(String* string)
 {
-    int_signed value;
-
-    value = convert_to_int(string_get_characters(string));
-
+    convert_to_int(string_get_characters(string));
     string_destroy(string);
 }
 
@@ -141,22 +139,22 @@ static Game* _get_game(Array* number_strings, int_signed (*metric)())
     return game;
 }
 
-Game* get_game_from_file(const char* file_name, int_signed (*metric)(const Board *))
+Game* get_game_from_file(const char* file_name, const Config* config)
 {
     Array*  number_strings;
 
     if (!(number_strings = input_get_strings_from_file(file_name)))
         return NULL;
     
-    return _get_game(number_strings, metric);
+    return _get_game(number_strings, config_get_metric(config));
 }
 
-Game* get_game_from_stdin(int_signed (*metric)(const Board *))
+Game* get_game_from_stdin(const Config* config)
 {
     Array* number_strings;
 
     if (!(number_strings = input_get_strings_from_stdin()))
         return NULL;
     
-    return _get_game(number_strings, metric);
+    return _get_game(number_strings, config_get_metric(config));
 }
