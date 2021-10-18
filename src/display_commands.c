@@ -46,7 +46,7 @@ static void _display_total_size(const Game* game)
 
 static void _display_queue_size(const Game* game)
 {
-    printf("Nodes in queue: %lld\n", game_get_queue_size(game));
+    printf("Number of nodes in queue: %lld\n", game_get_queue_size(game));
 }
 
 static void _display_solution_size(const Game* game)
@@ -57,6 +57,11 @@ static void _display_solution_size(const Game* game)
     printf("Path length from initial state: %lld\n", array_size(path));
 
     array_destroy(path);
+}
+
+static void _display_visited_size(const Game* game)
+{
+    printf("Number of visited nodes: %lld\n", game_get_visited_board_count(game));
 }
 
 void run(Game* game, const Config* config, clock_t start)
@@ -72,12 +77,15 @@ void run(Game* game, const Config* config, clock_t start)
     if (config_created(config))
         _display_total_size(game);
 
+    if (config_queue(config))
+        _display_queue_size(game);
+    
+    if (config_visied(config))
+        _display_visited_size(game);
+        
     if (config_path_length(config))
         _display_solution_size(game);
 
     if (config_time(config))
         _display_time(game, start);
-
-    if (config_queue(config))
-        _display_queue_size(game);
 }

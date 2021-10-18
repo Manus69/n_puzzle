@@ -5,3 +5,4 @@ npuzzle
 log
 test_file
 test.txt
+*.py

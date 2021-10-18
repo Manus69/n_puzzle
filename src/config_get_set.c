@@ -12,7 +12,7 @@ bool config_last_board(const Config* config)
 
 bool config_all_boards(const Config* config)
 {
-    return config->flags[D_A_BOARDS];
+    return config->flags[D_PATH];
 }
 
 bool config_path_length(const Config* config)

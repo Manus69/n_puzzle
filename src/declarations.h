@@ -83,4 +83,34 @@ bool            config_queue(const Config* config);
 //debug
 byte*           debug_get_bytes(const char* string);
 
+//
+//board
+byte*             board_get_values(const Board* board);
+byte              board_get_side_size(const Board* board);
+byte              board_get_total_size(const Board* board);
+int_signed        _get_board_mem_size(byte n_cells);
+byte              board_at(const Board* board, byte n);
+byte              board_set(Board* board, byte value, byte index);
+byte              board_at_position(const Board* board, Position position);
+byte              board_get_index_of_zero(const Board* board);
+Position          board_get_position_of_zero(const Board* board);
+void              board_set_previous(Board* board, const Board* previous);
+void              board_swap(Board* board, byte l_index, byte r_index);
+void              board_compute_metric(Board* board, int_signed (*metric)(const Board*));
+
+//position
+short             row_from_index(short index, short side_size);
+short             col_from_index(short index, short side_size);
+Position          position_from_index(short index, short side_size);
+short             index_from_position(Position position, short side_size);
+Position          position_diff(Position lhs, Position rhs);
+unsigned short    position_vector_length(Position position);
+Position          get_intended_zero_position(short side_size);
+Position          get_intended_position(short value, short side_size);
+short             index_above(short index, short side_size);
+short             index_below(short index, short side_size);
+short             index_leftward(short index, short side_size);
+short             index_rightward(short index, short side_size);
+bool              index_is_valid(short index, short total_size);
+
 #endif

@@ -4,12 +4,12 @@
 #include "why_definitions.h"
 #include "definitions.h"
 
-#define CONFIG_FILE_NAME "../config.txt"
+#define CONFIG_FILE_NAME "/home/manus/projects/npuzzle/config.txt"
 
 enum FIELDS
 {
     D_L_BOARD,
-    D_A_BOARDS,
+    D_PATH,
     D_TIME, 
     D_CREATED,
     D_VISITED,

@@ -117,6 +117,7 @@ const char* unsolvable[] =
 //author file
 //check if inlinig affects performance
 //display hash table distribution
+//use absolute paths
 
 int main(int argc, char** argv)
 {
@@ -139,16 +140,18 @@ int main(int argc, char** argv)
     else if (argc == 2)
         game = get_game_from_file(argv[1], config);
     else
+    {
         display_usage();
+        return EXIT_SUCCESS;
+    }
 
     run(game, config, start);
 
     // metric_test();
     // hash_test();
 
-    end = clock();
-
-    printf("Time elapsed: %f s\n", (end - start) / (double) CLOCKS_PER_SEC);
+    // end = clock();
+    // printf("Time elapsed: %f s\n", (end - start) / (double) CLOCKS_PER_SEC);
 
     return EXIT_SUCCESS;
 }

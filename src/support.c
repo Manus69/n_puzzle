@@ -88,5 +88,5 @@ Board* get_solved_board(int_signed total_size)
 
 double time_diff(clock_t start, clock_t end)
 {
-    return (end - start) / (double) CLOCKS_PER_SEC;
+    return (start - end) / (double) CLOCKS_PER_SEC;
 }

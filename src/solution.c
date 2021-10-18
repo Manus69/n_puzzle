@@ -14,7 +14,7 @@ Array* get_solution(const Game* game, const Board* final_board)
 
     while (current->previous)
     {
-        array_push(path, current);
+        array_push_front(path, current);
         current = current->previous;
     }
     array_push(path, current);

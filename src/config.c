@@ -12,14 +12,14 @@
 
 static const char* flag_string_values[] =
 {
-    "metric",
     "display_last_board",
-    "display_all_boards",
+    "display_path",
     "display_time",
     "display_created",
     "display_visited",
     "display_queue",
     "display_path_length",
+    "metric",
     0,
 };
 
@@ -28,7 +28,9 @@ static String* _get_string_value(const String* string)
     String*     value;
     int_signed  n;
 
-    if ((n = string_index_of(string, SEPARATOR)))
+    n = string_index_of(string, SEPARATOR);
+
+    if (n == NOT_FOUND)
         return error_set(WHY_ERROR_PARSE, NULL);
 
     value = string_substring_end(string, n + 1);
@@ -61,6 +63,7 @@ static void _set_bool_field(Config* config, enum FIELDS field, const String* str
     bool    value;
     char*   characters;
 
+    value = false;
     characters = string_get_characters(string_value);
     if (cstr_compare(characters, TRUE_STRING) == 0)
         value = true;
@@ -95,8 +98,10 @@ static String* _get_string_value_for_field(enum FIELDS field, const Array* strin
 {
     String* string;
     String* string_value;
+    char*   field_string;
 
-    string = _get_string_starting_with(strings, flag_string_values[field]);
+    field_string = (char *)flag_string_values[field];
+    string = _get_string_starting_with(strings, field_string);
     if (!string)
         string_value = string_create("false");
     else
@@ -116,16 +121,10 @@ static void _config_init(Config* config, const Array* strings)
         string_value = _get_string_value_for_field(field, strings);
         _set_field(config, field, string_value);
 
-        //
-        printf("%d ", field);
-        print_string(string_value);
-        //
-
-
         field ++;
     }
 
-    if (config->flags[D_L_BOARD] && config->flags[D_A_BOARDS])
+    if (config->flags[D_L_BOARD] && config->flags[D_PATH])
         config->flags[D_L_BOARD] = false;
 }
 
@@ -135,7 +134,7 @@ Config* config_create()
     Array*  lines;
 
     if (!(lines = get_all_linesAFN(CONFIG_FILE_NAME)))
-        return NULL;
+        return error_set(WHY_ERROR_FILE, NULL);
     
     config = allocate(sizeof(Config));
     _config_init(config, lines);
@@ -144,6 +143,7 @@ Config* config_create()
     {
         config_destroy(config);
         array_destroy(lines);
+        // error_display();
 
         return NULL;
     }

@@ -1,5 +1,6 @@
 #include "why_lib.h"
 #include "definitions.h"
+#include "declarations.h"
 #include "game.h"
 #include "board_inline.h"
 
