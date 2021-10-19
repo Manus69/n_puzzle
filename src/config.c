@@ -19,6 +19,7 @@ static const char* flag_string_values[] =
     "display_visited",
     "display_queue",
     "display_path_length",
+    "display_initial_board_stats",
     "metric",
     0,
 };
@@ -81,7 +82,7 @@ static void _set_metric(Config* config, const String* string_value)
 
     characters = string_get_characters(string_value);
     if (cstr_compare(characters, MHTN_STRING) == 0)
-        config->metric = metric_mhtn_all;
+        config->metric = metric_mhtn;
     else
         assert(0);
 }
@@ -107,6 +108,8 @@ static String* _get_string_value_for_field(enum FIELDS field, const Array* strin
     else
         string_value = _get_string_value(string);
 
+    // string_destroy(string);
+
     return string_value;
 }
 
@@ -120,6 +123,7 @@ static void _config_init(Config* config, const Array* strings)
     {
         string_value = _get_string_value_for_field(field, strings);
         _set_field(config, field, string_value);
+        string_destroy(string_value);
 
         field ++;
     }
@@ -138,11 +142,11 @@ Config* config_create()
     
     config = allocate(sizeof(Config));
     _config_init(config, lines);
+    array_destroy(lines);
 
     if (WHY_ERROR)
     {
         config_destroy(config);
-        array_destroy(lines);
         // error_display();
 
         return NULL;

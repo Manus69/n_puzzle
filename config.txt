@@ -4,8 +4,11 @@ metric = manhattan
 //display
 display_last_board = true
 display_path = false
+display_path_length = true
 display_time = true
 display_created = true
 display_visited = true
 display_queue = true
-display_path_length = true
+
+//initial board
+display_initial_board_stats = true

@@ -15,6 +15,11 @@ bool config_all_boards(const Config* config)
     return config->flags[D_PATH];
 }
 
+bool config_initial(const Config* config)
+{
+    return config->flags[D_INITIAL_STATUS];
+}
+
 bool config_path_length(const Config* config)
 {
     return config->flags[D_PATH_LENGTH];

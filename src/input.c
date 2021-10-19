@@ -125,13 +125,13 @@ Array* input_get_strings_from_file(const char* file_name)
     return number_strings;
 }
 
-static Game* _get_game(Array* number_strings, int_signed (*metric)())
+static Game* _get_game(Array* number_strings, const Config* config)
 {
     Game*   game;
     byte*   bytes;
 
     bytes = input_get_bytes(number_strings);
-    game = game_create(bytes, array_size(number_strings), metric);
+    game = game_create(bytes, array_size(number_strings), config_get_metric(config));
 
     array_destroy(number_strings);
     free(bytes);
@@ -146,7 +146,7 @@ Game* get_game_from_file(const char* file_name, const Config* config)
     if (!(number_strings = input_get_strings_from_file(file_name)))
         return NULL;
     
-    return _get_game(number_strings, config_get_metric(config));
+    return _get_game(number_strings, config);
 }
 
 Game* get_game_from_stdin(const Config* config)
@@ -156,5 +156,5 @@ Game* get_game_from_stdin(const Config* config)
     if (!(number_strings = input_get_strings_from_stdin()))
         return NULL;
     
-    return _get_game(number_strings, config_get_metric(config));
+    return _get_game(number_strings, config);
 }

@@ -67,3 +67,19 @@ void display_usage()
 {
     printf("PLACEHOLDER MESSAGE\n");
 }
+
+void print_arrow_down()
+{
+    printf(" ||\n \\/\n\n");
+}
+
+void print_arrow_downT()
+{
+    printf("|\nv\n\n");
+}
+
+void print_arraw_up()
+{
+    printf(" /\\\n ||\n\n");
+
+}

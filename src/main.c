@@ -9,6 +9,7 @@
 
 #include <time.h>
 #include <stdio.h>
+#include <assert.h>
 
 void _at_exit()
 {
@@ -39,7 +40,7 @@ void metric_test()
 
     board = board_create(input_get_bytesCSTR("1 6 2 0 4 3 7 8 5 "), 9);
     print_board(board);
-    metric = metric_mhtn_all(board);
+    metric = metric_mhtn(board);
 
     print_intN(metric);
 }
@@ -90,7 +91,7 @@ const char* unsolvable[] =
 //     Board*  solution;
 //     Game*   game;
 
-//     // game = get_game_from_file("test.txt", metric_mhtn_all);
+//     // game = get_game_from_file("test.txt", metric_mhtn);
 //     solution = game_play(game);
 
 //     Array* path = get_solution(game, solution);
@@ -122,7 +123,6 @@ const char* unsolvable[] =
 int main(int argc, char** argv)
 {
     clock_t     start;
-    clock_t     end;
     Game*       game;
     Config*     config;
 
@@ -145,13 +145,17 @@ int main(int argc, char** argv)
         return EXIT_SUCCESS;
     }
 
-    run(game, config, start);
+    if (!game)
+        assert(0);
 
     // metric_test();
     // hash_test();
+    
+    run(game, config, start);
+    game_destroy(game);
+    config_destroy(config);
 
-    // end = clock();
-    // printf("Time elapsed: %f s\n", (end - start) / (double) CLOCKS_PER_SEC);
+    _display_run_time(start, clock());
 
     return EXIT_SUCCESS;
 }

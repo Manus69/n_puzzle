@@ -24,14 +24,19 @@ int_signed count_transpositions(const Board* board)
 
     while (n < total_size - 1)
     {
-        while ((value = board_at(scratch_board, n)) != n + 1)
+        value = board_at(scratch_board, n);
+        if (value == 0)
         {
-            board_swap(scratch_board, n, value - 1);
-
+            board_swap(scratch_board, n, total_size - 1);
             swaps ++;
         }
-
-        n ++;
+        else if (value == n + 1)
+            n ++;
+        else
+        {
+            board_swap(scratch_board, n, value - 1);
+            swaps ++;
+        }
     }
 
     board_destroy(scratch_board);
@@ -39,32 +44,40 @@ int_signed count_transpositions(const Board* board)
     return swaps;
 }
 
+int_signed count_misplaced_elements(const Board* board)
+{
+    int_signed count;
+    int_signed n;
+    int_signed total_size;
+
+    count = 0;
+    n = 0;
+    total_size = board_get_total_size(board);
+
+    while (n < total_size)
+    {
+        if (!value_in_correct_position(board_at(board, n), n, board->side_size))
+            count ++;
+        
+        n ++;
+    }
+
+    return count;
+}
+
 byte check_parity(const Board* board)
 {
-    Board*      scratch_board;
-    int_signed  total_size;
     int_signed  transpositions;
-    Position    position_of_zero;
     byte        parity;
+    int_signed  distance_from_zero;
 
     #ifdef DBG
         print_board(board);
     #endif
 
-    position_of_zero = position_from_index(board->empty_position_index, board->side_size);
-    total_size = board_get_total_size(board);
-    scratch_board = board_copy(board);
-    transpositions = 0;
-
-    if (board->empty_position_index != total_size - 1)
-    {
-        board_swap(scratch_board, board->empty_position_index, total_size - 1);
-        transpositions ++;
-    }
-
-    transpositions += count_transpositions(scratch_board);
-    parity = (transpositions + position_vector_length(position_of_zero)) % 2;
-    board_destroy(scratch_board);
+    transpositions = count_transpositions(board);
+    distance_from_zero = metric_mhtn_zero(board);
+    parity = (transpositions + distance_from_zero) % 2;
 
     return parity;
 }
@@ -88,5 +101,5 @@ Board* get_solved_board(int_signed total_size)
 
 double time_diff(clock_t start, clock_t end)
 {
-    return (start - end) / (double) CLOCKS_PER_SEC;
+    return (end - start) / (double) CLOCKS_PER_SEC;
 }

@@ -32,7 +32,7 @@ int_signed metric_mhtn_value_index(const Board* board, byte value, byte index)
     return position_vector_length(diff);
 }
 
-int_signed metric_mhtn_all(const Board* board)
+int_signed metric_mhtn(const Board* board)
 {
     int_signed  total_distance;
     byte        index;
@@ -70,4 +70,17 @@ int_signed metric_mhtn_after_swap(const Board* board, byte j, byte k)
                 - metric_mhtn_value_index(board, rhs, k);
 
     return board->metric_value + increment;
+}
+
+int_signed metric_misplaced(const Board* board)
+{
+    return count_misplaced_elements(board);
+}
+
+int_signed metric_misplaced_after_swap(const Board* board, byte j, byte k)
+{
+    byte        lhs;
+    byte        rhs;
+
+    ;
 }

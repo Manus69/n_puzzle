@@ -4,6 +4,11 @@
 #include "position.h"
 #include "why_macros.h"
 
+bool position_equal(Position lhs, Position rhs)
+{
+    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
+}
+
 short row_from_index(short index, short side_size)
 {
     return index / side_size;
@@ -41,7 +46,12 @@ Position get_intended_zero_position(short side_size)
 
 Position get_intended_position(short value, short side_size)
 {
-    return value ? (Position)position_from_index(value - 1, side_size) : get_intended_zero_position(side_size);
+    return value ? position_from_index(value - 1, side_size) : get_intended_zero_position(side_size);
+}
+
+bool value_in_correct_position(short value, short index, short side_size)
+{
+    position_equal(position_from_index(index, side_size), get_intended_position(value, side_size));
 }
 
 short index_above(short index, short side_size)

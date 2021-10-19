@@ -15,8 +15,9 @@ enum FIELDS
     D_VISITED,
     D_QUEUE,
     D_PATH_LENGTH,
+    D_INITIAL_STATUS,
     METRIC,
-    _SENTINEL
+    _SENTINEL,
 };
 
 struct Config

@@ -9,6 +9,7 @@
 struct Game
 {
     Board*      solved_board;
+    Board*      initial_board;
     HashTable*  boards;
     HashTable*  visited_boards;
 
@@ -21,7 +22,7 @@ struct Game
     byte        BOARD_SIDE_SIZE;
     byte        BOARD_TOTAL_SIZE;
 
-    clock_t     game_created;
+    clock_t     time_of_creation;
 };
 
 #endif
