@@ -118,7 +118,8 @@ const char* unsolvable[] =
 //author file
 //check if inlinig affects performance
 //display hash table distribution
-//use absolute paths
+//uniform metric does not solve
+//misplaced metric is weird
 
 int main(int argc, char** argv)
 {

@@ -57,12 +57,12 @@ static Board* _board_move_create(const Game* game, const Board* board, short (*i
     board_swap(new_board, index, board->empty_position_index);
     board_init_fields(new_board, board, index);
 
-    #ifdef DBG
-        printf("New board with hash %llu, index %llu\n",
-        new_board->hash_value, new_board->hash_value % game_get_hash_table_capacity(game));
-    #endif
-
     new_board->metric_value = game->metric_increment(board, index, board->empty_position_index);
+
+    #ifdef DBG
+        printf("mhtn: %lld misplaced: %lld uniform %lld\n",
+                metric_mhtn(new_board), metric_misplaced(new_board), metric_uniform(new_board));
+    #endif
 
     return new_board;
 }

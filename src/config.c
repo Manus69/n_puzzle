@@ -5,10 +5,12 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define SEPARATOR       '='
-#define TRUE_STRING     "true"
-#define FALSE_STRING    "false"
-#define MHTN_STRING     "manhattan"
+#define SEPARATOR           '='
+#define TRUE_STRING         "true"
+#define FALSE_STRING        "false"
+#define MHTN_STRING         "manhattan"
+#define MISPLACED_STRING    "misplaced"
+#define UNIFORM_STRING      "uniform"
 
 static const char* flag_string_values[] =
 {
@@ -83,6 +85,10 @@ static void _set_metric(Config* config, const String* string_value)
     characters = string_get_characters(string_value);
     if (cstr_compare(characters, MHTN_STRING) == 0)
         config->metric = metric_mhtn;
+    else if (cstr_compare(characters, MISPLACED_STRING) == 0)
+        config->metric = metric_misplaced;
+    else if (cstr_compare(characters, UNIFORM_STRING) == 0)
+        config->metric = metric_uniform;
     else
         assert(0);
 }

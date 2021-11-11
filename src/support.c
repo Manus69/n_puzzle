@@ -103,3 +103,8 @@ double time_diff(clock_t start, clock_t end)
 {
     return (end - start) / (double) CLOCKS_PER_SEC;
 }
+
+void* no_op(void* pointer)
+{
+    return pointer;
+}

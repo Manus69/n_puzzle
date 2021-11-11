@@ -14,6 +14,7 @@ int_signed      count_transpositions(const Board* board);
 int_signed      count_misplaced_elements(const Board* board);
 byte            check_parity(const Board* board);
 double          time_diff(clock_t start, clock_t end);
+void*           no_op(void* pointer);
 
 //solution
 Array*          get_solution(const Game* game, const Board* final_board);
@@ -55,6 +56,10 @@ int_signed      metric_mhtn_at_index(const Board* board, byte index);
 int_signed      metric_mhtn(const Board* board);
 int_signed      metric_mhtn_zero(const Board* board);
 int_signed      metric_mhtn_after_swap(const Board* board, byte j, byte k);
+int_signed      metric_misplaced(const Board* board);
+int_signed      metric_misplaced_after_swap(const Board* board, byte j, byte k);
+int_signed      metric_uniform(const Board* board);
+int_signed      metric_uniform_after_swap(const Board* board, byte j, byte k);
 
 //io
 byte*           input_get_bytes(const Array* strings);
@@ -69,6 +74,7 @@ void            print_arrow_downT();
 void            print_arraw_up();
 void            _display_initial_state(const Game* game);
 void            _display_run_time(clock_t start, clock_t end);
+void            _display_failure(const Game* game);
 
 //hash
 int_unsigned    hash_board(const Board* board);
@@ -113,6 +119,7 @@ short           index_from_position(Position position, short side_size);
 Position        position_diff(Position lhs, Position rhs);
 unsigned short  position_vector_length(Position position);
 Position        get_intended_zero_position(short side_size);
+short           get_intended_index(short value, short side_size);
 Position        get_intended_position(short value, short side_size);
 short           index_above(short index, short side_size);
 short           index_below(short index, short side_size);

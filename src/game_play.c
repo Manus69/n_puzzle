@@ -11,7 +11,8 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define _SIZE 4
+#define CAP     (1 << 22)
+#define _SIZE   4
 
 // #define CURRENT_DBG
 // #define QUEUE_DBG
@@ -28,16 +29,6 @@ bool game_is_solvedM(const Game* game)
 
 bool game_is_solved(const Game* game)
 {
-    #ifdef CMP_DBG
-        if (game->current_board->hash_value % 661 == 125)
-        {
-            printf("Comparing:\n");
-            print_board(game->current_board);
-            int_signed value = board_compare_values(game->solved_board, game->current_board);
-            printf("comparison: %lld\n", value);
-        }
-    #endif
-
     if (board_compare_hash(game->solved_board, game->current_board) != 0)
         return false;
 
@@ -62,6 +53,12 @@ bool game_mark_current_as_visited(Game* game)
     return hash_table_insert_hashed(game->visited_boards, game->current_board, board_compare_values, game->current_board->hash_value);
 }
 
+void game_remove_board(Game* game, Board* board)
+{
+    hash_table_remove_hashed(game->boards, board, board_compare_values, board->hash_value);
+    hash_table_remove_hashed(game->visited_boards, board, board_compare_values, board->hash_value);
+}
+
 Board* game_get_next_board(Game* game)
 {
     Board* next_board;
@@ -78,18 +75,17 @@ Board* game_get_next_board(Game* game)
     }
 }
 
-static void _process_new_board(Game* game, Board* new_board)
+static byte _process_new_board(Game* game, Board* new_board)
 {
     if (!new_board)
-        return ;
+        return 0;
 
     if (board_exists(game, new_board))
-        return board_destroy(new_board);
+    {
+        board_destroy(new_board);
+        return 0;
+    }
 
-    // if (game_board_is_visited(game, new_board))
-    //     return board_destroy(new_board);
-    
-    // board_compute_metric(new_board, game->metric);
     board_register(game, new_board);
 
     #ifdef QUEUE_DBG
@@ -104,24 +100,30 @@ static void _process_new_board(Game* game, Board* new_board)
         print_heap(game->queue, print_board);
         printf("----------\n");
     #endif
+
+    return 1;
 }
 
-static void _process_neighbours(Game* game)
+static byte _process_neighbours(Game* game)
 {
     Board*      (*move_function)();
     Board*      new_board;
     int_signed  n;
+    byte        boards_spawned;
 
+    boards_spawned = 0;
     n = 0;
     while (n < _SIZE)
     {
         move_function = _functions[n];
         new_board = move_function(game, game->current_board);
 
-        _process_new_board(game, new_board);
+        boards_spawned += _process_new_board(game, new_board);
 
         n ++;
     }
+
+    return boards_spawned;
 }
 
 bool game_process_current_board(Game* game)
@@ -136,49 +138,26 @@ bool game_process_current_board(Game* game)
         assert(0);
 
     _process_neighbours(game);
+
     game_mark_current_as_visited(game);
-
     game->current_board = game_get_next_board(game);
-
-    #ifdef CURRENT_DBG
-        printf("@@@@@@\ncurrent board:\n");
-        print_board(game->current_board);
-    #endif
 
     return false;
 }
 
 Board* game_play(Game* game)
 {
-    int_signed invariant;
+    int_signed n_iterations;
 
-    #ifdef ITERATION_COUNT_DBG
-        int_signed n_iterations = 0;
-        int_signed cap = (1 << 20);
-    #endif
-
+    n_iterations = 0;
     while (!game_process_current_board(game))
     {
-        // print_board(game->current_board);
-        invariant = _game_compute_invariant(game);
-
-        if (invariant != 1)
+        n_iterations ++;
+        if ((n_iterations) == CAP)
         {
-            printf("Invariant condition is violated;\n");
+            _display_failure(game);
             return NULL;
         }
-        
-        #ifdef ITERATION_COUNT_DBG
-            if ((n_iterations ++) == cap)
-            {
-                printf("Iteration cap reached\n");
-                return NULL;
-            }
-        #endif
-
-        #ifdef INVARIANT_DBG
-            printf("INVARIANT = %lld\n", _game_compute_invariant(game));
-        #endif 
     }
     
     return game->current_board;

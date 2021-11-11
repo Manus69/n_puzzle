@@ -49,9 +49,15 @@ Position get_intended_position(short value, short side_size)
     return value ? position_from_index(value - 1, side_size) : get_intended_zero_position(side_size);
 }
 
+short get_intended_index(short value, short side_size)
+{
+    return value ? value - 1 : side_size * side_size - 1;
+}
+
 bool value_in_correct_position(short value, short index, short side_size)
 {
-    position_equal(position_from_index(index, side_size), get_intended_position(value, side_size));
+    return position_equal(position_from_index(index, side_size),
+                        get_intended_position(value, side_size));
 }
 
 short index_above(short index, short side_size)

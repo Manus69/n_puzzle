@@ -23,6 +23,20 @@ static int_unsigned _estimate_table_capacity(int_signed total_size)
     return total_size * total_size * total_size * total_size;
 }
 
+static void* _get_metric_increment(int_signed (*metric)(const Board *))
+{
+    if (metric == metric_mhtn)
+        return metric_mhtn_after_swap;
+    else if (metric == metric_misplaced)
+        return metric_mhtn_after_swap;
+    else if (metric == metric_uniform)
+        return metric_uniform_after_swap;
+    
+    assert(0);
+
+    return NULL;
+}
+
 Game* game_create(byte* values, int_signed total_size, int_signed (*metric)(const Board *))
 {
     Game*           game;
@@ -35,7 +49,7 @@ Game* game_create(byte* values, int_signed total_size, int_signed (*metric)(cons
     game->visited_boards = hash_table_create(copy_shallow, NULL, hash_board, capacity);
     game->queue = heap_create(copy_shallow, NULL, board_compare_metric_vals);
     game->metric = metric;
-    game->metric_increment = (metric == metric_mhtn) ? metric_mhtn_after_swap : NULL; //
+    game->metric_increment = _get_metric_increment(metric);
 
     game->current_board = board_create(values, total_size);
 

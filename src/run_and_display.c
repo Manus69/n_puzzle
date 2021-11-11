@@ -68,7 +68,6 @@ static void _display_solution_size(const Game* game)
 static void _display_visited_size(const Game* game)
 {
     printf("Number of visited nodes:        %lld\n", game_get_visited_board_count(game));
-
 }
 
 void _display_initial_state(const Game* game)
@@ -90,6 +89,13 @@ void _display_initial_state(const Game* game)
 void _display_run_time(clock_t start, clock_t end)
 {
     printf("Total time elapsed:             %f s\n", time_diff(start, end));
+}
+
+void _display_failure(const Game* game)
+{
+    printf("Iteration cap reached; Terminating\n");
+    _display_total_size(game);
+    _display_visited_size(game);
 }
 
 void run(Game* game, const Config* config, clock_t start)

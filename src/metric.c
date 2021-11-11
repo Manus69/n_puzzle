@@ -77,10 +77,39 @@ int_signed metric_misplaced(const Board* board)
     return count_misplaced_elements(board);
 }
 
+static bool _misplaced_after_swap(const Board* board, byte j, byte k)
+{
+    byte value;
+
+    value = board_at(board, j);
+    if (get_intended_index(value, board->side_size) == k)
+        return false;
+    
+    return true;
+}
+
 int_signed metric_misplaced_after_swap(const Board* board, byte j, byte k)
 {
-    byte        lhs;
-    byte        rhs;
+    int_signed increment;
 
-    ;
+    increment = 0;
+    increment += _misplaced_after_swap(board, j, k) ? 1 : -1;
+    increment += _misplaced_after_swap(board, k, j) ? 1 : -1;
+
+    return board->metric_value + increment;
+}
+
+int_signed metric_uniform(const Board* board)
+{
+    no_op((void *)board);
+
+    return 0;
+}
+
+int_signed metric_uniform_after_swap(const Board* board, byte j, byte k)
+{
+    no_op((void *)board);
+    SWAP(j, k, byte);
+
+    return 0; 
 }
